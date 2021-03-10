@@ -1,0 +1,19 @@
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: django-migrations
+spec:
+  template:
+    spec:
+      containers:
+        - name: django
+          image: jx-payments:latest
+          command: ['python', 'manage.py', 'migrate']
+          env:
+            - name: MYSQL_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: mysql-credentials
+                  key: password
+      restartPolicy: Never
+  backoffLimit: 5
